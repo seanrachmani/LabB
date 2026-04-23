@@ -1,11 +1,11 @@
 #link
-Bsort : Bsort.o
-	gcc -m32 -g -Wall -o Bsort Bsort.o
+hexaPrint : hexaPrint.o
+	gcc -m32 -g -Wall -o hexaPrint hexaPrint.o
 
 #compile 
-Bsort.o : Bsort.c
-	gcc -m32 -g -Wall -c -o Bsort.o Bsort.c
+hexaPrint.o : hexaPrint.c
+	gcc -m32 -g -Wall -c -o hexaPrint.o hexaPrint.c
 
 #clean
 clean :
-	rm -f *.o Bsort
+	rm -f *.o hexaPrint
