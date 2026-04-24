@@ -19,6 +19,7 @@ fread reads blocks of data and we can tell it how many bytes to read
 3)NEED TO REMEMBER TO FREE
 4)fread first paramter has to be ptr so & for sigSize which isnt ptr
 5)if we reached the end i returned null might need to change later
+6)fread(where to put info,single item size in bytes,how many items,where to read from)
 */
 virus* readVirus(FILE* file){
     virus* newVir = (virus*)malloc(sizeof(virus));
@@ -55,4 +56,42 @@ void printVirus(virus* virus, FILE* output){
     }
     fprintf("\n");
 }
+
+
+int main(int argc, char **argv){
+    /*Open the signatures file, check the magic number.
+    If the magic number is incorrect(i.e. different from "VIRL"or "VIRB"),then print an error message, close the file, and return.
+    If magic number is OK,
+    use readVirus in order to read the viruses one-by-one,
+    and use printVirus in order to print the virus 
+    (to a file or to the standard output, up to your choice).
+    ========selfNotes===========
+    1)I opened signaturs-L bc linux reads little endian
+    2)fopen rb=read binary
+    3)here we free malloc from readVirus
+    */
+    FILE* sigFile = fopen("signatures-L","rb");
+    if(sigFile == NULL){
+        printf("can't open file\n");
+        return 1;
+    }
+    char magic[4];
+    fread(magic,1,4,sigFile);
+    if(strncmp(magic,"VIRL",4) !=0 && strncmp(magic,"VIRB",4) !=0){
+        printf("Unsupported File - magic word is incorrect\n");
+        fclose(sigFile);
+        return 1;
+    }
+    virus* tmp = readVirus(sigFile);
+    while(tmp!=NULL){
+        printVirus(tmp,"RESULT.txt");
+        free(tmp->VirusName);
+        free(tmp->Sig);
+        free(tmp);
+        tmp = readVirus(sigFile);
+    }
+    fclose(sigFile);
+    return 0;
+}
+
 
