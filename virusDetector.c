@@ -9,11 +9,11 @@ unsigned char* VirusName;
 unsigned char* Sig;
 } virus;
 
-//helper functions
+//helper function 1:
 /*this function receives a file pointer and returns a virus* that represents the next virus in the file. 
 To read from a file, use fread()
-fread reads blocks of data and we can tell it how many bytes to read*/
-/*========selfNotes===========
+fread reads blocks of data and we can tell it how many bytes to read
+========selfNotes===========
 1)cannot have var name the same as struct name
 2)any * field require malloc
 3)NEED TO REMEMBER TO FREE
@@ -32,5 +32,27 @@ virus* readVirus(FILE* file){
     newVir->Sig = (unsigned char*)malloc(newVir->SigSize);
     fread(newVir->Sig,1,newVir->SigSize,file);
     return newVir;
+}
+
+//helper function 2:
+/*this function receives a virus and a pointer to an output file.
+The function prints the virus to the given output.
+It prints the virus name (in ASCII),
+the virus signature length (in decimal),
+and the virus signature (in hexadecimal representation).
+========selfNotes===========
+1)we used hexaPrint code for sig array
+2)%s means the function expect ptr, d means fprintf expect num
+3)for string we dont need loop bc its a convention that string is null
+terminated, therfore it looping over the string automatically
+*/
+void printVirus(virus* virus, FILE* output){
+    fprintf(output,"Virus name: %s\n",virus->VirusName);
+    fprintf(output,"Virus signature length: %d\n", virus->SigSize);
+    fprintf(output,"Virus signature:\n");
+    for(int i=0; i<virus->SigSize ;i++){
+        fprintf("%02X ",virus->Sig[i]);
+    }
+    fprintf("\n");
 }
 
