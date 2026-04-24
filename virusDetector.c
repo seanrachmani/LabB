@@ -1,4 +1,7 @@
-/*DESCRIPTION
+#include <stdio.h>
+#include <stdlib.h>
+
+/*File DESCRIPTION
 virusDetector compares the content of the user-selected FILE byte-by-byte with a pre-  defined set of viruses described in a SIGNATURES file. 
 The comparison is done according to a naive   algorithm described in task 2.*/
 
@@ -21,7 +24,7 @@ fread reads blocks of data and we can tell it how many bytes to read
 5)if we reached the end i returned null might need to change later
 6)fread(where to put info,single item size in bytes,how many items,where to read from)
 */
-virus* readVirus(FILE* file){
+virus* readVirus(FILE *file){
     virus* newVir = (virus*)malloc(sizeof(virus));
     size_t firstFread = fread(&(newVir->SigSize),1,2,file);
     if(firstFread != 2){
