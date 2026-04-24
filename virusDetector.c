@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*File DESCRIPTION
 virusDetector compares the content of the user-selected FILE byte-by-byte with a pre-  defined set of viruses described in a SIGNATURES file. 
@@ -24,7 +25,7 @@ fread reads blocks of data and we can tell it how many bytes to read
 5)if we reached the end i returned null might need to change later
 6)fread(where to put info,single item size in bytes,how many items,where to read from)
 */
-virus* readVirus(FILE *file){
+virus* readVirus(FILE* file){
     virus* newVir = (virus*)malloc(sizeof(virus));
     size_t firstFread = fread(&(newVir->SigSize),1,2,file);
     if(firstFread != 2){
@@ -55,9 +56,9 @@ void printVirus(virus* virus, FILE* output){
     fprintf(output,"Virus signature length: %d\n", virus->SigSize);
     fprintf(output,"Virus signature:\n");
     for(int i=0; i<virus->SigSize ;i++){
-        fprintf("%02X ",virus->Sig[i]);
+        fprintf(output,"%02X ",virus->Sig[i]);
     }
-    fprintf("\n");
+    fprintf(output,"\n");
 }
 
 
@@ -87,7 +88,7 @@ int main(int argc, char **argv){
     }
     virus* tmp = readVirus(sigFile);
     while(tmp!=NULL){
-        printVirus(tmp,"RESULT.txt");
+        printVirus(tmp, stdout);
         free(tmp->VirusName);
         free(tmp->Sig);
         free(tmp);
