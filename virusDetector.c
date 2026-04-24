@@ -53,12 +53,18 @@ terminated, therfore it looping over the string automatically
 */
 void printVirus(virus* virus, FILE* output){
     fprintf(output,"Virus name: %s\n",virus->VirusName);
-    fprintf(output,"Virus signature length: %d\n", virus->SigSize);
-    fprintf(output,"Virus signature:\n");
+    fprintf(output,"Virus size: %d\n", virus->SigSize);
+    fprintf(output,"signature:\n");
     for(int i=0; i<virus->SigSize ;i++){
         fprintf(output,"%02X ",virus->Sig[i]);
+        //Start: the following if condition is taken from Gemini:
+        if((i+1) % 20 ==0 && (i+1)!=virus->SigSize){
+        //End of taken code
+            fprintf(output,"\n");
+        }   
     }
-    fprintf(output,"\n");
+ 
+    fprintf(output,"\n\n");
 }
 
 
