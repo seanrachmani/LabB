@@ -195,10 +195,18 @@ void undefaultSelect(char* fileToInspect){
 ========selfNotes===========
 fseek in order to get to virus location
 fwrite in order to change it to RET
+1)SEEK_SET - start of file
 */
 void neutralize_virus(char *fileName, int signatureOffset){
-
-
+    FILE* file = fopen(fileName,"r+");
+    if(file==NULL){
+        fprintf(stdout,"cant read the file\n");
+        return;
+    }
+    fseek(file,signatureOffset,SEEK_SET);
+    unsigned char ret = 0xC3;
+    fwrite(&ret,1,1,file);
+    fclose(file);
 }
 
 
@@ -218,6 +226,10 @@ void detect_virus(char *buffer, unsigned int size, link *virus_list){
             //end of taken code
                 if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
                     if(fix==1){
+                        if(fileToInspect[0] == '\0'){
+                            fprintf(stdout,"file was not selected\n");
+                            return;
+                        }
                         neutralize_virus(fileToInspect,i);
                     }
                     else{
@@ -257,13 +269,6 @@ void detect(char* fileToInspect,link* virList){
 
 
 
-
-
-
-
-
-
-
 int main(int argc, char **argv){
     /*
     ========selfNotes===========
@@ -295,7 +300,6 @@ int main(int argc, char **argv){
             fix = 0;
             detect(fileToInspect,virList);
         }
-
 
         /*
         detect virus printing info
