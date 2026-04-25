@@ -127,18 +127,34 @@ void list_free(link* virus_list){
     }
 }
 
+
 //helper functions for part 2b menu
 /*<L>oad signatures*/
+void load(char* fileName){
 
 /*<P>rint signatures*/
-/*<S>elect file to inspect*/
+void print(){
+    
 
+}
+/*<S>elect file to inspect*/
+void select(){
+
+}
 
 /*<D>etect viruses*/
-/*<F>ix file*/
+void detect(){
 
+}
+/*<F>ix file*/
+void fix(){
+
+}
 
 /*<Q>uit*/
+void quit(){
+
+}
 
 
 
@@ -157,33 +173,50 @@ int main(int argc, char **argv){
                         <L>oad signatures\n<P>rint signatures\n
                         <S>elect file to inspect\n<D>etect viruses\n
                         <F>ix file\n<Q>uit\n");
-        if()
-    }
+        virList* = NULL;
+        char buffer[1024];
+        char case;
+        fgets(buffer,sizeof(buffer),stdin);
+        sscanf(buffer,"%c",&case);
+        if(case=='L'){
+            char* fileName;
+            sscanf(buffer,"%s",&fileName);
+            FILE* sigFile = fopen(fileName,"rb");
+            if(sigFile == NULL){
+                printf("can't open file\n");
+                return 1;
+            }
+            char magic[4];
+            fread(magic,1,4,sigFile);
+            if(strncmp(magic,"VIRL",4) !=0 && strncmp(magic,"VIRB",4) !=0){
+                printf("Unsupported File - magic word is incorrect\n");
+                fclose(sigFile);
+                return 1;
+            }
+            virus* tmp = readVirus(sigFile);
+            while(tmp!=NULL){
+                list_append(virList,tmp);
+                tmp = readVirus(sigFile);
+            }
+        }
+        if(case=='P'){
+            list_print(virList,stdout);
+        }
+        if(case=='S'){
 
+        }
+        if(case=='D'){
 
+        }
+        if(case=='F'){
 
-    FILE* sigFile = fopen("signatures-L","rb");
-    if(sigFile == NULL){
-        printf("can't open file\n");
-        return 1;
+        }
+        if(case=='Q'){
+            fclose(sigFile);
+            return 1;
+        }
     }
-    char magic[4];
-    fread(magic,1,4,sigFile);
-    if(strncmp(magic,"VIRL",4) !=0 && strncmp(magic,"VIRB",4) !=0){
-        printf("Unsupported File - magic word is incorrect\n");
-        fclose(sigFile);
-        return 1;
-    }
-    virus* tmp = readVirus(sigFile);
-    while(tmp!=NULL){
-        printVirus(tmp, stdout);
-        free(tmp->VirusName);
-        free(tmp->Sig);
-        free(tmp);
-        tmp = readVirus(sigFile);
-    }
-    fclose(sigFile);
-    return 0;
+return 0;
 }
 
 
