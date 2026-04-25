@@ -195,7 +195,7 @@ void detect_virus(char* buffer, unsigned int size, link* virus_list){
             if(size - i > current_list->vir->SigSize){
             //end of taken code
                 if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
-                    fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
+                    fprintf(stdout,"sarting byte location in the suspected file: %02X\n",i);
                     fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
                     fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
                 }
@@ -283,3 +283,12 @@ return 0;
 }
 
 
+/*PART 2a self notes
+**hexedit: tool for editing binary files in hexadecimal format
+1)open terminal
+2)chmod u+x infected
+3)make, ./virusDetector,L,signatues-L,S,infected,D
+the result->Doom,signature size: 19,starting byte 107 in hexa(263 in decimal)
+4)enter for changing position,107 for start of the virus detected, c3 for RET, ctrl-x for saving
+5)after applying those steps if we type ./infected the line "I am virus1 is not printed anymore :))"
+*/
