@@ -13,6 +13,15 @@ unsigned char* VirusName;
 unsigned char* Sig;
 } virus;
 
+//given struct 1b:
+typedef struct link link;
+struct link {
+link* nextVirus;
+virus* vir;
+};
+
+
+/*==============================part1a====================================*/
 //helper function 1:
 /*this function receives a file pointer and returns a virus* that represents the next virus in the file. 
 To read from a file, use fread()
@@ -66,6 +75,63 @@ void printVirus(virus* virus, FILE* output){
  
     fprintf(output,"\n\n");
 }
+
+/*==============================part1b====================================*/
+//function 1:
+/*Print the data of every link in list to the given stream.
+Each item followed by a newline character.
+========selfNotes===========
+1)pointers arithmetic wont work since its on the heap and the links might be in different places on the heap
+*/
+void list_print(link* virus_list, FILE* file){
+    while(virus_list != NULL){
+        printVirus(virus_list->vir,file);
+        virus_list = virus_list->nextVirus;
+    }
+}
+
+
+//function 2:
+/*Add a new link with the given data to the list(at the end CAN ALSO AT BEGINNING),
+and return a pointer to the list(i.e., the first link in the list).
+If the list is null - create a new entry and return a pointer to the entry.
+========selfNotes===========
+1)malloc for new link - REMEMBER TO FREE
+2)added to the beginning
+3)if virus list is null the code still good bc we did newlink.next = null
+*/
+link* list_append(link* virus_list, virus* data){
+    link* newLink = (link*)malloc(sizeof(link));
+    newLink->vir = data;
+    newLink->nextVirus = virus_list;
+    return newLink;
+}
+
+
+//function 3:
+/*Free the memory allocated by the list.
+========selfNotes===========
+1)when we added virus to the list we transfer ownership
+  therefore need to free virus here. 
+2)no need for malloc for nextcopy since its only other name for exist memory
+*/
+void list_free(link* virus_list){
+    link* nextCopy;
+    while(virus_list != NULL){
+        free(virus_list->vir->VirusName);
+        free(virus_list->vir->Sig);
+        free(virus_list->vir);
+        nextCopy = virus_list->nextVirus;
+        free(virus_list);
+        virus_list = nextCopy;
+    }
+}
+
+
+
+
+
+
 
 
 int main(int argc, char **argv){
