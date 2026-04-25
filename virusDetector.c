@@ -172,7 +172,7 @@ and put file to inspect name in it
 ========selfNotes===========
 cant decalre char[] and return it from this scope sisnce its on the stack.
 */
-void undefaultSelect(char[] fileToInspect){
+void undefaultSelect(char* fileToInspect){
     fprintf(stdout,"please select file to inspect\n");
     char buffer[256];
     fgets(buffer,sizeof(buffer),stdin);
@@ -186,20 +186,20 @@ fread contents, activate detect_virus
 ========selfNotes===========
 1)fread(where to put info,single item size in bytes,how many items,where to read from)
 */
-void detect(char[] fileToInspect,link* virList){
-    if(fileToInspect==NULL){
+void detect(char* fileToInspect,link* virList){
+    if(fileToInspect[0] == '\0'){
         fprintf(stdout,"file was not selected\n");
-        return 1;
+        return;
     }
     FILE* file = fopen(fileToInspect,"rb");
     if(file==NULL){
         fprintf(stdout,"cant read the file\n");
-        return 1;
+        return;
     }
     char buffer[10000];
     unsigned int size = fread(buffer,1,10000,file);
     detect_virus(buffer,size,virList);
-    fclosr(fileToInspect);
+    fclose(file);
 }
 
 
@@ -211,8 +211,8 @@ void detect_virus(char* buffer, unsigned int size, link* virus_list){
     size_t startingByte;
     for(int i=0; i<size; i++){
         link* current_list = virus_list;
-        while(virus_list!=NULL){
-            if(memcmp(buffer[i]&,current_list->vir->sig,current_list->vir>SigSize) == 0){
+        while(current_list!=NULL){
+            if(memcmp(&buffer[i],current_list->vir->sig,current_list->vir->SigSize) == 0){
                 fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
                 fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
                 fprintf(stdout,"the size of the virus signature: %d",current_list->vir->SigSize);
@@ -241,6 +241,7 @@ int main(int argc, char **argv){
     */
     char[] fileToInspect = NULL;
     link* virList = NULL;
+    char fileToInspect[256];
     while(1){
         fprintf(stdout,"Select operation from the following menu by index:\n"
                         "<L>oad signatures\n<P>rint signatures\n"
@@ -257,8 +258,7 @@ int main(int argc, char **argv){
             list_print(virList,stdout);
         }
         if(choice=='S'){
-            char fileToInspect[256];
-            fileToInspect = undefaultSelect(fileToInspect);
+            undefaultSelect(fileToInspect);
         }
         if(choice=='D'){
             detect(fileToInspect,virList);
