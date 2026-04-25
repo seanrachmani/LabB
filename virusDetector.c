@@ -166,6 +166,14 @@ link* load(link* virList){
     return virList;
 }
 
+
+
+
+//global var for fix mode flag, and for infected file name
+boolean fix = false;
+char fileToInspect[256] = "";
+
+
 /*<S>elect file to inspect
 gets char[] array, 
 and put file to inspect name in it
@@ -182,8 +190,22 @@ void undefaultSelect(char* fileToInspect){
 
 
 
+/*<F>ix file*/
+/*
+========selfNotes===========
+fseek in order to get to virus location
+fwrite in order to change it to RET
+*/
+void neutralize_virus(char *fileName, int signatureOffset){
+
+
+}
+
+
+
 /*
 scan and compares suspected file with our stored viruses
+if fix is true itdoesnt print info, instead it netrualize each virus.
 ========selfNotes===========
 1)memcmp(ptr1,ptr2,size to compare)
 */
@@ -195,9 +217,14 @@ void detect_virus(char* buffer, unsigned int size, link* virus_list){
             if(size - i > current_list->vir->SigSize){
             //end of taken code
                 if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
-                    fprintf(stdout,"sarting byte location in the suspected file: %02X\n",i);
-                    fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
-                    fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
+                    if(fix==true){
+                        netarlize_virus(fileToInspect,i);
+                    }
+                    else{
+                        fprintf(stdout,"sarting byte location in the suspected file: %02X\n",i);
+                        fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
+                        fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
+                    }
                 }
             }
             current_list = current_list->nextVirus;
@@ -207,7 +234,7 @@ void detect_virus(char* buffer, unsigned int size, link* virus_list){
 
 
 /*<D>etect viruses
-gets fileToInspect Name, our saved LL with viruses,
+gets fileToInspect Name, our saved LL with viruses.
 fread contents, activate detect_virus
 ========selfNotes===========
 1)fread(where to put info,single item size in bytes,how many items,where to read from)
@@ -231,10 +258,7 @@ void detect(char* fileToInspect,link* virList){
 
 
 
-/*<F>ix file*/
-void fix(){
-    printf("Not implemented\n");
-}
+
 
 
 
@@ -249,7 +273,7 @@ int main(int argc, char **argv){
     4)fgets reads line of text, sscanf help store info from string to variables(help us ignores \n)
     */
     link* virList = NULL;
-    char fileToInspect[256] = "";
+    boolean fix = false;
     while(1){
         fprintf(stdout,"Select operation from the following menu by index:\n"
                         "<L>oad signatures\n<P>rint signatures\n"
@@ -271,9 +295,18 @@ int main(int argc, char **argv){
         if(choice=='D'){
             detect(fileToInspect,virList);
         }
+
+
+        /*
+        detect virus printing info
+        if the user choose F, we call detetct and then detetct_virus,
+        but instead of printing were telling it to transfer offset to netarlize_virus
+        */
         if(choice=='F'){
-            fix();
+            fix = true;
+            detect(fileToInspect,virList);
         }
+
         if(choice=='Q'){
             list_free(virList);
             exit(0);
