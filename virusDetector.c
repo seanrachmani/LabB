@@ -20,6 +20,8 @@ link* nextVirus;
 virus* vir;
 };
 
+//global var for big/little endian:
+int isBig = false;
 
 /*==============================part1a====================================*/
 //helper function 1:
@@ -46,6 +48,11 @@ virus* readVirus(FILE* file){
     newVir->Sig = (unsigned char*)malloc(newVir->SigSize);
     fread(newVir->Sig,1,newVir->SigSize,file);
     return newVir;
+    if(isBig){
+        //taken code from gemini, manipulate size from little to big
+        newVir->SigSize = (newVir->SigSize >> 8) | (newVir->SigSize << 8);
+        //end of taken code
+    }
 }
 
 //helper function 2:
@@ -156,6 +163,9 @@ link* load(link* virList){
         printf("Unsupported File - magic word is incorrect\n");
         fclose(sigFile);
         return virList;
+    }
+    if(strncmp(magic,"VIRB",4)==0){
+        isBig = 1;
     }
     virus* tmp = readVirus(sigFile);
     while(tmp!=NULL){
