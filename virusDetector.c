@@ -129,31 +129,55 @@ void list_free(link* virus_list){
 
 
 //helper functions for part 2b menu
-/*<L>oad signatures*/
-void load(char* fileName){
-
-/*<P>rint signatures*/
-void print(){
-    
-
+/*<L>oad signatures
+gets an empty LL,load viruses to LL and returns the updated LL
+if the magic word is incorrect/ cant open file, return the previously loaded list
+========selfNotes===========
+1)didnt understand fully:
+in load, were changing ptr of the LL,which transfered by "refrence" differnet from main ptr address. 
+therefore we need to return LL otherwise the changed only rleeevant for load scope
+2)combination of fgets and sscanf help us read input without \n
+*/
+link* load(link* virList){
+    fprintf(stdout,"please enter signature file name\n");
+    char fileNameBuff[256];
+    char fileName[256];
+    fgets(fileNameBuff,sizeof(fileNameBuff),stdin);
+    //no & bc string already a ptr:
+    sscanf(fileNameBuff,"%s",fileName);
+    FILE* sigFile = fopen(fileName,"rb");
+    if(sigFile == NULL){
+        printf("can't open file\n");
+        return virList;
+    }
+    char magic[4];
+    fread(magic,1,4,sigFile);
+    if(strncmp(magic,"VIRL",4) !=0 && strncmp(magic,"VIRB",4) !=0){
+        printf("Unsupported File - magic word is incorrect\n");
+        fclose(sigFile);
+        return virList;
+    }
+    virus* tmp = readVirus(sigFile);
+    while(tmp!=NULL){
+        virList = list_append(virList,tmp);
+        tmp = readVirus(sigFile);
+    }
+    fclose(sigFile);
+    return virList;
 }
+
 /*<S>elect file to inspect*/
 void select(){
-
+    printf("Not implemented\n");
 }
 
 /*<D>etect viruses*/
 void detect(){
-
+    printf("Not implemented\n");
 }
 /*<F>ix file*/
 void fix(){
-
-}
-
-/*<Q>uit*/
-void quit(){
-
+    printf("Not implemented\n");
 }
 
 
@@ -166,54 +190,36 @@ int main(int argc, char **argv){
     1)I opened signaturs-L bc linux reads little endian
     2)fopen rb=read binary
     3)here we free malloc from readVirus
-    4)fgets reads line of text, sscanf help store info from string to variables
+    4)fgets reads line of text, sscanf help store info from string to variables(help us ignores \n)
     */
+    link* virList = NULL;
     while(1){
-        fprintf(stdout,"Select operation from the following menu by index:\n
-                        <L>oad signatures\n<P>rint signatures\n
-                        <S>elect file to inspect\n<D>etect viruses\n
-                        <F>ix file\n<Q>uit\n");
-        virList* = NULL;
+        fprintf(stdout,"Select operation from the following menu by index:\n"
+                        "<L>oad signatures\n<P>rint signatures\n"
+                        "<S>elect file to inspect\n<D>etect viruses\n"
+                        "<F>ix file\n<Q>uit\n");
         char buffer[1024];
-        char case;
+        char choice;
         fgets(buffer,sizeof(buffer),stdin);
-        sscanf(buffer,"%c",&case);
-        if(case=='L'){
-            char* fileName;
-            sscanf(buffer,"%s",&fileName);
-            FILE* sigFile = fopen(fileName,"rb");
-            if(sigFile == NULL){
-                printf("can't open file\n");
-                return 1;
-            }
-            char magic[4];
-            fread(magic,1,4,sigFile);
-            if(strncmp(magic,"VIRL",4) !=0 && strncmp(magic,"VIRB",4) !=0){
-                printf("Unsupported File - magic word is incorrect\n");
-                fclose(sigFile);
-                return 1;
-            }
-            virus* tmp = readVirus(sigFile);
-            while(tmp!=NULL){
-                list_append(virList,tmp);
-                tmp = readVirus(sigFile);
-            }
+        sscanf(buffer,"%c",&choice);
+        if(choice=='L'){
+            virList = load(virList);
         }
-        if(case=='P'){
+        if(choice=='P'){
             list_print(virList,stdout);
         }
-        if(case=='S'){
-
+        if(choice=='S'){
+            select();
         }
-        if(case=='D'){
-
+        if(choice=='D'){
+            detect();
         }
-        if(case=='F'){
-
+        if(choice=='F'){
+            fix();
         }
-        if(case=='Q'){
-            fclose(sigFile);
-            return 1;
+        if(choice=='Q'){
+            list_free(virList);
+            exit(0);
         }
     }
 return 0;
