@@ -212,10 +212,14 @@ void detect_virus(char* buffer, unsigned int size, link* virus_list){
     for(int i=0; i<size; i++){
         link* current_list = virus_list;
         while(current_list!=NULL){
-            if(memcmp(&buffer[i],current_list->vir->sig,current_list->vir->SigSize) == 0){
-                fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
-                fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
-                fprintf(stdout,"the size of the virus signature: %d",current_list->vir->SigSize);
+            //taken code from gemini
+            if(size - i > current_list->vir->SigSize){
+            //end of taken code
+                if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
+                    fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
+                    fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
+                    fprintf(stdout,"the size of the virus signature: %d",current_list->vir->SigSize);
+                }
             }
             current_list = current_list->nextVirus;
         }
@@ -239,9 +243,8 @@ int main(int argc, char **argv){
     3)here we free malloc from readVirus
     4)fgets reads line of text, sscanf help store info from string to variables(help us ignores \n)
     */
-    char[] fileToInspect = NULL;
     link* virList = NULL;
-    char fileToInspect[256];
+    char fileToInspect[256] = "";
     while(1){
         fprintf(stdout,"Select operation from the following menu by index:\n"
                         "<L>oad signatures\n<P>rint signatures\n"
