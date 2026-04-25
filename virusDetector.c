@@ -180,6 +180,32 @@ void undefaultSelect(char* fileToInspect){
     sscanf(buffer,"%s",fileToInspect);
 }
 
+
+
+/*
+scan and compares suspected file with our stored viruses
+========selfNotes===========
+1)memcmp(ptr1,ptr2,size to compare)
+*/
+void detect_virus(char* buffer, unsigned int size, link* virus_list){
+    for(int i=0; i<size; i++){
+        link* current_list = virus_list;
+        while(current_list!=NULL){
+            //taken code from gemini
+            if(size - i > current_list->vir->SigSize){
+            //end of taken code
+                if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
+                    fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
+                    fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
+                    fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
+                }
+            }
+            current_list = current_list->nextVirus;
+        }
+    }
+}
+
+
 /*<D>etect viruses
 gets fileToInspect Name, our saved LL with viruses,
 fread contents, activate detect_virus
@@ -203,28 +229,7 @@ void detect(char* fileToInspect,link* virList){
 }
 
 
-/*
-========selfNotes===========
-1)memcmp(ptr1,ptr2,size to compare)
-*/
-void detect_virus(char* buffer, unsigned int size, link* virus_list){
-    size_t startingByte;
-    for(int i=0; i<size; i++){
-        link* current_list = virus_list;
-        while(current_list!=NULL){
-            //taken code from gemini
-            if(size - i > current_list->vir->SigSize){
-            //end of taken code
-                if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
-                    fprintf(stdout,"sarting byte location in the suspected file: %d \n",i);
-                    fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
-                    fprintf(stdout,"the size of the virus signature: %d",current_list->vir->SigSize);
-                }
-            }
-            current_list = current_list->nextVirus;
-        }
-    }
-}
+
 
 /*<F>ix file*/
 void fix(){
