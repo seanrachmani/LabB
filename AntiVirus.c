@@ -21,7 +21,7 @@ virus* vir;
 };
 
 //global var for big/little endian:
-int isBig = false;
+int isBig = 0;
 
 /*==============================part1a====================================*/
 //helper function 1:
@@ -48,7 +48,7 @@ virus* readVirus(FILE* file){
     newVir->Sig = (unsigned char*)malloc(newVir->SigSize);
     fread(newVir->Sig,1,newVir->SigSize,file);
     return newVir;
-    if(isBig){
+    if(isBig==1){
         //taken code from gemini, manipulate size from little to big
         newVir->SigSize = (newVir->SigSize >> 8) | (newVir->SigSize << 8);
         //end of taken code
@@ -243,7 +243,7 @@ void detect_virus(char *buffer, unsigned int size, link *virus_list){
                         neutralize_virus(fileToInspect,i);
                     }
                     else{
-                        fprintf(stdout,"sarting byte location in the suspected file: %02X\n",i);
+                        fprintf(stdout,"sarting byte location in the suspected file in hexa: %02X\n",i);
                         fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
                         fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
                     }
@@ -338,4 +338,8 @@ return 0;
 the result->Doom,signature size: 19,starting byte 107 in hexa(263 in decimal)
 4)enter for changing position,107 for start of the virus detected, c3 for RET, ctrl-x for saving
 5)after applying those steps if we type ./infected the line "I am virus1 is not printed anymore :))"
+
+The neutralization assumes that the virus is a function that does something and returns.
+so the virus is still there but instead of leting him do malicious stuff like printing i am virus1,
+we returning so the rest of the file is staying the same
 */

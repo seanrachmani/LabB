@@ -1,11 +1,11 @@
 #link
-virusDetector : virusDetector.o
-	gcc -m32 -g -Wall -o virusDetector virusDetector.o
+AntiVirus : AntiVirus.o
+	gcc -m32 -g -Wall -o AntiVirus AntiVirus.o
 
 #compile 
-virusDetector.o : virusDetector.c
-	gcc -m32 -g -Wall -c -o virusDetector.o virusDetector.c
+AntiVirus.o : AntiVirus.c
+	gcc -m32 -g -Wall -c -o AntiVirus.o AntiVirus.c
 
 #clean
 clean :
-	rm -f *.o virusDetector
+	rm -f *.o AntiVirus
