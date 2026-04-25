@@ -329,6 +329,7 @@ int main(int argc, char **argv){
             list_free(virList);
             exit(0);
         }
+        fprintf(stdout, "function not supported\n");
     }
 return 0;
 }
