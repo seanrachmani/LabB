@@ -127,25 +127,41 @@ void list_free(link* virus_list){
     }
 }
 
+//helper functions for part 2b menu
+/*<L>oad signatures*/
+
+/*<P>rint signatures*/
+/*<S>elect file to inspect*/
 
 
+/*<D>etect viruses*/
+/*<F>ix file*/
+
+
+/*<Q>uit*/
 
 
 
 
 
 int main(int argc, char **argv){
-    /*Open the signatures file, check the magic number.
-    If the magic number is incorrect(i.e. different from "VIRL"or "VIRB"),then print an error message, close the file, and return.
-    If magic number is OK,
-    use readVirus in order to read the viruses one-by-one,
-    and use printVirus in order to print the virus 
-    (to a file or to the standard output, up to your choice).
+    /*
     ========selfNotes===========
     1)I opened signaturs-L bc linux reads little endian
     2)fopen rb=read binary
     3)here we free malloc from readVirus
+    4)fgets reads line of text, sscanf help store info from string to variables
     */
+    while(1){
+        fprintf(stdout,"Select operation from the following menu by index:\n
+                        <L>oad signatures\n<P>rint signatures\n
+                        <S>elect file to inspect\n<D>etect viruses\n
+                        <F>ix file\n<Q>uit\n");
+        if()
+    }
+
+
+
     FILE* sigFile = fopen("signatures-L","rb");
     if(sigFile == NULL){
         printf("can't open file\n");
