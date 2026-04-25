@@ -167,7 +167,7 @@ link* load(link* virList){
 }
 
 /*<S>elect file to inspect*/
-void select(){
+void undefaultSelect(){
     printf("Not implemented\n");
 }
 
@@ -209,7 +209,7 @@ int main(int argc, char **argv){
             list_print(virList,stdout);
         }
         if(choice=='S'){
-            select();
+            undefaultSelect();
         }
         if(choice=='D'){
             detect();
