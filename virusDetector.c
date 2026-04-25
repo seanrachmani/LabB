@@ -170,7 +170,7 @@ link* load(link* virList){
 
 
 //global var for fix mode flag, and for infected file name
-boolean fix = false;
+int fix = 0;
 char fileToInspect[256] = "";
 
 
@@ -209,16 +209,16 @@ if fix is true itdoesnt print info, instead it netrualize each virus.
 ========selfNotes===========
 1)memcmp(ptr1,ptr2,size to compare)
 */
-void detect_virus(char* buffer, unsigned int size, link* virus_list){
+void detect_virus(char *buffer, unsigned int size, link *virus_list){
     for(int i=0; i<size; i++){
         link* current_list = virus_list;
         while(current_list!=NULL){
             //taken code from gemini
-            if(size - i > current_list->vir->SigSize){
+            if(size - i >= current_list->vir->SigSize){
             //end of taken code
                 if(memcmp(&buffer[i],current_list->vir->Sig,current_list->vir->SigSize) == 0){
-                    if(fix==true){
-                        netarlize_virus(fileToInspect,i);
+                    if(fix==1){
+                        neutralize_virus(fileToInspect,i);
                     }
                     else{
                         fprintf(stdout,"sarting byte location in the suspected file: %02X\n",i);
@@ -273,7 +273,6 @@ int main(int argc, char **argv){
     4)fgets reads line of text, sscanf help store info from string to variables(help us ignores \n)
     */
     link* virList = NULL;
-    boolean fix = false;
     while(1){
         fprintf(stdout,"Select operation from the following menu by index:\n"
                         "<L>oad signatures\n<P>rint signatures\n"
@@ -293,6 +292,7 @@ int main(int argc, char **argv){
             undefaultSelect(fileToInspect);
         }
         if(choice=='D'){
+            fix = 0;
             detect(fileToInspect,virList);
         }
 
@@ -303,7 +303,7 @@ int main(int argc, char **argv){
         but instead of printing were telling it to transfer offset to netarlize_virus
         */
         if(choice=='F'){
-            fix = true;
+            fix = 1;
             detect(fileToInspect,virList);
         }
 
