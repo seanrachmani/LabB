@@ -247,7 +247,7 @@ void detect_virus(char *buffer, unsigned int size, link *virus_list){
                         neutralize_virus(fileToInspect,i);
                     }
                     else{
-                        fprintf(stdout,"sarting byte location in the suspected file in hexa: %02X\n",i);
+                        fprintf(stdout,"starting byte location in the suspected file in hexa: %02X\n",i);
                         fprintf(stdout,"virus name: %s\n",current_list->vir->VirusName);
                         fprintf(stdout,"the size of the virus signature: %d\n",current_list->vir->SigSize);
                     }
@@ -329,7 +329,9 @@ int main(int argc, char **argv){
             list_free(virList);
             exit(0);
         }
-        fprintf(stdout, "function not supported\n");
+        if(choice!='L' && choice!='P' && choice!='S' && choice!='D' && choice!='F' && choice!='Q'){
+            fprintf(stdout, "function not supported\n");
+        }
     }
 return 0;
 }
